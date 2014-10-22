@@ -46,17 +46,6 @@ def sudoku_is_valid(sudoku_values):
                 return False
     return True
 
-def update_candidate_answers_exhaustive_search(candidate_answers):
-    updated_answers = candidate_answers
-    # # add one to the last element 
-    updated_answers[-1] += 1
-    for idx in range(len(updated_answers))[::-1]:
-        if updated_answers[idx] > 9:
-            updated_answers[idx] -= 9
-            if idx-1 >= 0:
-                updated_answers[idx-1] += 1
-    return updated_answers
-    
 if __name__ == "__main__":
     input_filename = "../data/sudoku_1_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
@@ -64,19 +53,3 @@ if __name__ == "__main__":
     # # try all possible combinations
     flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
     count_not_answered = flag_not_answered.sum()
-    candidate_answers = np.ones(count_not_answered,dtype="i4")
-    print candidate_answers
-    sudoku_values[flag_not_answered] = candidate_answers
-    while not sudoku_is_valid(sudoku_values):
-        candidate_answers = update_candidate_answers_exhaustive_search(
-            candidate_answers)
-        print candidate_answers
-        if (candidate_answers == np.ones(count_not_answered,dtype="i4")).all():
-            break
-        sudoku_values[flag_not_answered] = candidate_answers
-    else:
-        print "Final Answer"
-        print candidate_answers
-        print sudoku_values
-    
-    

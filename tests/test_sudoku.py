@@ -80,32 +80,3 @@ def test_sudoku_validity_violating_block_uniqueness():
     sudoku_values[[row2],[column2]] = sudoku_values[[row1],[column1]]
     
     assert sudoku_is_valid(sudoku_values) == False
-
-def test_update_candidate_answers_exhaustive_search_add_one_to_last_element():
-    candidate_answers = np.array([1,1,1,1,5])
-    expected_answers = np.array([1,1,1,1,6])
-    updated_answers = update_candidate_answers_exhaustive_search(
-        candidate_answers)
-    assert (updated_answers == expected_answers).all()
-
-def test_update_candidate_answers_exhaustive_search_last_element_is_9():
-    candidate_answers = np.array([1,1,1,2,9])
-    expected_answers = np.array([1,1,1,3,1])
-    updated_answers = update_candidate_answers_exhaustive_search(
-        candidate_answers)
-    assert (updated_answers == expected_answers).all()
-    
-def test_update_candidate_answers_exhaustive_search_last_two_elements_are_9():
-    candidate_answers = np.array([1,2,3,9,9])
-    expected_answers = np.array([1,2,4,1,1])
-    updated_answers = update_candidate_answers_exhaustive_search(
-        candidate_answers)
-    assert (updated_answers == expected_answers).all()
-    
-def test_update_candidate_answers_exhaustive_search_last_all_elements_are_9():
-    candidate_answers = np.array([9,9,9,9,9])
-    expected_answers = np.array([1,1,1,1,1])
-    updated_answers = update_candidate_answers_exhaustive_search(
-        candidate_answers)
-    assert (updated_answers == expected_answers).all()
-    

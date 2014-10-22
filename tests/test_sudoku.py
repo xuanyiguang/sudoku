@@ -11,13 +11,13 @@ def load_given_sudoku_answer():
     return sudoku_values
 
 def test_sudoku_validity_using_given_answer():
-    """ The answer provided in the challenge is valid
+    """ The answer provided in the challenge should be valid
     """
     sudoku_values = load_given_sudoku_answer()
     assert sudoku_is_valid(sudoku_values) == True
     
 def test_sudoku_validity_sudoku_unfinished():
-    """ If sudoku is unfinished (zero values), it is invalid
+    """ If sudoku is unfinished (having zero values), it is invalid
     """
     sudoku_values = load_given_sudoku_answer()
     
@@ -30,6 +30,7 @@ def test_sudoku_validity_sudoku_unfinished():
     
 def test_sudoku_validity_violating_row_uniqueness():
     """ Test sudoku that violates row uniqueness
+    
     The input is produced using a valid answer, and then randomly setting
     two values in the same row to the same value.
     """
@@ -47,6 +48,7 @@ def test_sudoku_validity_violating_row_uniqueness():
     
 def test_sudoku_validity_violating_column_uniqueness():
     """ Test sudoku that violates column uniqueness
+    
     The input is produced using a valid answer, and then randomly setting 
     two values in the same column to the same value.
     """
@@ -64,6 +66,7 @@ def test_sudoku_validity_violating_column_uniqueness():
     
 def test_sudoku_validity_violating_block_uniqueness():
     """ Test sudoku that violates block uniqueness
+    
     The input is produced using a valid answer, and then randomly setting 
     two values in the same block to the same value.
     """
@@ -83,6 +86,7 @@ def test_sudoku_validity_violating_block_uniqueness():
 
 def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
     """ Test the situation when only one value is feasible for the given cell
+    
     The input is produced using a valid sudoku answer. Any randomly chosen 
     cell should only have one feasible value, which is the value in the cell.
     """
@@ -96,9 +100,10 @@ def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
     
 def test_find_feasible_values_one_feasible_value_with_incomplete_sudoku():
     """ Test the situation when only one value is feasible for the given cell
-    The input is produced using a valid sudoku answer, and delete (replace with
-    0) a randomly selected number, say 5, from the sudoku. There is just one 
-    feasible value for zero-valued cells.
+    
+    The input is produced using a valid sudoku answer, and then delete 
+    (replace with 0) a randomly selected number (say all the 5s) from the
+    sudoku. There is just one feasible value for zero-valued cells.
     """
     sudoku_values = load_given_sudoku_answer()
     row = np.random.randint(9)
@@ -106,20 +111,23 @@ def test_find_feasible_values_one_feasible_value_with_incomplete_sudoku():
     cell_value = sudoku_values[row,column]
     sudoku_values[sudoku_values == cell_value] = 0
     feasible_values = find_feasible_values(sudoku_values,row,column)
+    
     assert len(feasible_values) == 1
     assert feasible_values[0] == cell_value
     
 def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
     """ Test the situation when two values are feasible for the given cell
-    The input is produced using a valid sudoku answer, and delete (replace with
-    0) two randomly selected numbers, say 5 and 8, from the sudoku. There are 
-    two feasible values for zero-valued cells.
+    
+    The input is produced using a valid sudoku answer, and then delete 
+    (replace with 0) two randomly selected numbers (say all the 5s and 8s) 
+    from the sudoku. There are two feasible values for any zero-valued cell.
     """
     sudoku_values = load_given_sudoku_answer()
     row = np.random.randint(9)
     column = np.random.randint(9)
     cell_value = sudoku_values[row,column]
     sudoku_values[sudoku_values == cell_value] = 0
+    # # pick another (different) value
     another_cell_value = cell_value
     while another_cell_value == cell_value:
         another_cell_value = np.random.random_integers(9)
@@ -131,6 +139,7 @@ def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
 
 def test_solve_sudoku_given_example():
     """ Test if the sudoku solver gives the same solution
+    
     Input and output files provided by the challenge
     """
     sudoku_input_filename = "../data/sudoku_example_in.csv"
@@ -142,6 +151,7 @@ def test_solve_sudoku_given_example():
     
 def test_solve_sudoku_easy1():
     """ Test if the sudoku solver gives the same solution
+    
     Input and output files are from online (Sample problem 1, easy)
     http://www.nikoli.com/en/puzzles/sudoku/
     """

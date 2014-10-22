@@ -45,7 +45,41 @@ def sudoku_is_valid(sudoku_values):
             if len(np.unique(sudoku_values[row_range][:,column_range])) != 9:
                 return False
     return True
-
+    
+def find_feasible_values(sudoku_values,row,column):
+    """ Return feasible values at the given row and column of a sudoku
+    
+    Argument:
+    sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
+    row (int, required) -- row number
+    column (int, required) -- column number
+    
+    Returns:
+    ndarray that contains the feasible values at the given row and column 
+    of the sudoku
+    
+    Note: 
+    - Feasibility only depends on row, column and block uniqueness. 
+    - No fancier rules.
+    - Only values outside of the given cell will be used to calculate feasible values. Or, the value of the given cell will not be used.
+    """
+    # # set current cell value to 0 (not to use it)
+    sudoku_values[row,column] = 0
+    # # values in the given row
+    row_values = sudoku_values[row,:]
+    # # values in the given column
+    column_values = sudoku_values[:,column]
+    # # values in the given block
+    row_block_range = get_indices_from_same_block(row)
+    column_block_range = get_indices_from_same_block(column)
+    block_values = sudoku_values[row_block_range][:,column_block_range]
+    
+    appearred_values = np.append(np.append(row_values,column_values),block_values)
+    unique_appearred_values = np.unique(appearred_values)
+    possible_sudoku_values = np.arange(1,10)
+    feasible_values = np.setdiff1d(possible_sudoku_values,unique_appearred_values)
+    return feasible_values
+    
 if __name__ == "__main__":
     input_filename = "../data/sudoku_1_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")

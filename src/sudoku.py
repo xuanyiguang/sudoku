@@ -46,8 +46,20 @@ def sudoku_is_valid(sudoku_values):
                 return False
     return True
 
+def update_candidate_answers_exhaustive_combination(candidate_answers):
+    updated_answers = candidate_answers
+    # # add one to the last element 
+    updated_answers[-1] += 1
+    for idx in range(len(updated_answers))[::-1]:
+        if updated_answers[idx] > 9:
+            updated_answers[idx] -= 9
+            if idx-1 >= 0:
+                updated_answers[idx-1] += 1
+    return updated_answers
+    
 if __name__ == "__main__":
     input_filename = "../data/sudoku_1_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     
     # # try all possible combinations
+    

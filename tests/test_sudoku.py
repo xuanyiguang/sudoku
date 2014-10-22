@@ -10,13 +10,13 @@ def load_given_sudoku_answer():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     return sudoku_values
 
-def test_sudoku_validity_using_given_answer():
+def test_validate_sudoku_with_given_answer():
     """ The answer provided in the challenge should be valid
     """
     sudoku_values = load_given_sudoku_answer()
-    assert sudoku_is_valid(sudoku_values) == True
+    assert validate_sudoku(sudoku_values) == True
     
-def test_sudoku_validity_sudoku_unfinished():
+def test_validate_sudoku_with_unfinished_sudoku():
     """ If sudoku is unfinished (having zero values), it is invalid
     """
     sudoku_values = load_given_sudoku_answer()
@@ -26,9 +26,9 @@ def test_sudoku_validity_sudoku_unfinished():
     column = np.random.random_integers(0,8)
     sudoku_values[row,column] = 0
     
-    assert sudoku_is_valid(sudoku_values) == False
+    assert validate_sudoku(sudoku_values) == False
     
-def test_sudoku_validity_violating_row_uniqueness():
+def test_validate_sudoku_violating_row_uniqueness():
     """ Test sudoku that violates row uniqueness
     
     The input is produced using a valid answer, and then randomly setting
@@ -44,9 +44,9 @@ def test_sudoku_validity_violating_row_uniqueness():
         column2 = np.random.randint(9)
     sudoku_values[[row],[column2]] = sudoku_values[[row],[column1]]
     
-    assert sudoku_is_valid(sudoku_values) == False    
+    assert validate_sudoku(sudoku_values) == False    
     
-def test_sudoku_validity_violating_column_uniqueness():
+def test_validate_sudoku_violating_column_uniqueness():
     """ Test sudoku that violates column uniqueness
     
     The input is produced using a valid answer, and then randomly setting 
@@ -62,9 +62,9 @@ def test_sudoku_validity_violating_column_uniqueness():
         row2 = np.random.randint(9)
     sudoku_values[[row2],[column]] = sudoku_values[[row1],[column]]
     
-    assert sudoku_is_valid(sudoku_values) == False
+    assert validate_sudoku(sudoku_values) == False
     
-def test_sudoku_validity_violating_block_uniqueness():
+def test_validate_sudoku_violating_block_uniqueness():
     """ Test sudoku that violates block uniqueness
     
     The input is produced using a valid answer, and then randomly setting 
@@ -82,7 +82,7 @@ def test_sudoku_validity_violating_block_uniqueness():
         column2 = get_indices_from_same_block(column1)[np.random.randint(2)]
     sudoku_values[[row2],[column2]] = sudoku_values[[row1],[column1]]
     
-    assert sudoku_is_valid(sudoku_values) == False
+    assert validate_sudoku(sudoku_values) == False
 
 def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
     """ Test the situation when only one value is feasible for the given cell

@@ -18,7 +18,7 @@ def get_indices_from_same_block(index):
     elif index in np.array([6,7,8]):
         return np.array([6,7,8])
         
-def sudoku_is_valid(sudoku_values):
+def validate_sudoku(sudoku_values):
     """ Test if sudoku solution is valid
     
     Argument:
@@ -119,7 +119,7 @@ def solve_sudoku(sudoku_values):
         flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
     else:
         print "Finished!"
-        print "Sudoku solved: {}".format(sudoku_is_valid(sudoku_values))
+        print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
         return sudoku_values
 
 if __name__ == "__main__":

@@ -14,6 +14,18 @@ def get_indices_from_same_block(index):
         return np.array([6,7,8])
         
 def sudoku_is_valid(sudoku_values):
+    """ Test if sudoku solution is valid
+    
+    Argument:
+        sudoku_values (ndarray, required) -- sudoku solution with shape (9,9)
+        
+    Return:
+        True if the solution is valid:
+            place the numbers 1 to 9 in the empty squares so that 
+            each row, each column and each 3x3 block contains 
+            the same number only once
+        False otherwise
+    """
     # # no values <=0 or >=10
     if np.min(sudoku_values) <= 0 or np.max(sudoku_values) >= 10:
         return False

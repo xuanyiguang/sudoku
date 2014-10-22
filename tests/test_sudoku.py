@@ -6,7 +6,7 @@ from src.sudoku import *
 def load_given_sudoku_answer():
     """ Load the sudoku answer provided in the challenge
     """
-    input_filename = "../data/sudoku_1_out.csv"
+    input_filename = "../data/sudoku_example_out.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     return sudoku_values
 

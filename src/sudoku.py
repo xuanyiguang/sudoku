@@ -81,7 +81,7 @@ def find_feasible_values(sudoku_values,row,column):
     return feasible_values
     
 if __name__ == "__main__":
-    input_filename = "../data/sudoku_1_in.csv"
+    input_filename = "../data/sudoku_example_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     print sudoku_values
     

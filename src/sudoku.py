@@ -83,7 +83,22 @@ def find_feasible_values(sudoku_values,row,column):
 if __name__ == "__main__":
     input_filename = "../data/sudoku_1_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+    print sudoku_values
     
-    # # try all possible combinations
+    # # for each unfilled cell, determine feasible values
+    # # if there is only one feasible value, fill it
     flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
-    count_not_answered = flag_not_answered.sum()
+    while flag_not_answered.sum() > 0:
+        position_not_answered = np.where(flag_not_answered)
+        row_indices_not_answered = position_not_answered[0]
+        column_indices_not_answered = position_not_answered[1]
+        for row, column in zip(row_indices_not_answered,column_indices_not_answered):
+            feasible_values = find_feasible_values(sudoku_values,row,column)
+            if len(feasible_values) == 1:
+                sudoku_values[row,column] = feasible_values[0]
+                print "Fill row {}, column {}, with {}".format(row,column,feasible_values[0])
+                print sudoku_values
+        flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
+    else:
+        print "Finished!"
+        print "Sudoku solved: {}".format(sudoku_is_valid(sudoku_values))

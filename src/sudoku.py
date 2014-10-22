@@ -62,4 +62,21 @@ if __name__ == "__main__":
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     
     # # try all possible combinations
+    flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
+    count_not_answered = flag_not_answered.sum()
+    candidate_answers = np.ones(count_not_answered,dtype="i4")
+    print candidate_answers
+    sudoku_values[flag_not_answered] = candidate_answers
+    while not sudoku_is_valid(sudoku_values):
+        candidate_answers = update_candidate_answers_exhaustive_search(
+            candidate_answers)
+        print candidate_answers
+        if (candidate_answers == np.ones(count_not_answered,dtype="i4")).all():
+            break
+        sudoku_values[flag_not_answered] = candidate_answers
+    else:
+        print "Final Answer"
+        print candidate_answers
+        print sudoku_values
+    
     

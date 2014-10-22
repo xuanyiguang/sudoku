@@ -129,4 +129,25 @@ def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
     assert len(feasible_values) == 2
     assert set(feasible_values) == set([cell_value,another_cell_value])
 
+def test_solve_sudoku_given_example():
+    """ Test if the sudoku solver gives the same solution
+    Input and output files provided by the challenge
+    """
+    sudoku_input_filename = "../data/sudoku_example_in.csv"
+    sudoku_output_filename = "../data/sudoku_example_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
     
+def test_solve_sudoku_easy1():
+    """ Test if the sudoku solver gives the same solution
+    Input and output files are from online (Sample problem 1, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy1_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy1_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()

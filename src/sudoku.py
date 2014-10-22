@@ -2,9 +2,14 @@ import numpy as np
 
 def get_indices_from_same_block(index):
     """ Get indices that fall in the same block as the given index
+    
     The sudoku values are zero indexed, so [0,1,2] form a block, 
-    [3,4,5] form a block, and [6,7,8] form a block.
-    For example, given index 5, return ndarray array([3,4,5]).
+    [3,4,5] form a block, and [6,7,8] form a block. For example, 
+    given index 5, return ndarray array([3,4,5]).
+    
+    Note:
+    This function works for both rows and columns
+    
     """
     if index in np.array([0,1,2]):
         return np.array([0,1,2])
@@ -17,7 +22,7 @@ def sudoku_is_valid(sudoku_values):
     """ Test if sudoku solution is valid
     
     Argument:
-        sudoku_values (ndarray, required) -- sudoku solution with shape (9,9)
+        sudoku_values (9x9 ndarray, required) -- sudoku solution
         
     Return:
         True if the solution is valid:
@@ -50,13 +55,13 @@ def find_feasible_values(sudoku_values,row,column):
     """ Return feasible values at the given row and column of a sudoku
     
     Argument:
-    sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
-    row (int, required) -- row number
-    column (int, required) -- column number
+        sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
+        row (int, required) -- row number
+        column (int, required) -- column number
     
     Returns:
-    ndarray that contains the feasible values at the given row and column 
-    of the sudoku
+        ndarray that contains the feasible values at the given row and column 
+        of the sudoku
     
     Note: 
     - Feasibility only depends on row, column and block uniqueness. 
@@ -79,14 +84,25 @@ def find_feasible_values(sudoku_values,row,column):
     possible_sudoku_values = np.arange(1,10)
     feasible_values = np.setdiff1d(possible_sudoku_values,unique_appearred_values)
     return feasible_values
-    
-if __name__ == "__main__":
-    input_filename = "../data/sudoku_example_in.csv"
-    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+
+def solve_sudoku(sudoku_values):
     print sudoku_values
+    """ Sudoku solver
     
-    # # for each unfilled cell, determine feasible values
-    # # if there is only one feasible value, fill it
+    Argument: 
+        sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
+    
+    Return:
+        sudoku_values (9x9 ndarray), with empty cells (typically in the form
+        of 0, but could be any number other than 1 - 9) filled
+        
+    Algorithm:
+    For each unfilled cell, determine feasible values based on row, column and 
+    block uniqueness
+    - if there is only one feasible value, fill it
+    - otherwise, wait
+    """
+    
     flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
     while flag_not_answered.sum() > 0:
         position_not_answered = np.where(flag_not_answered)
@@ -98,7 +114,15 @@ if __name__ == "__main__":
                 sudoku_values[row,column] = feasible_values[0]
                 print "Fill row {}, column {}, with {}".format(row,column,feasible_values[0])
                 print sudoku_values
+            else:
+                print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
         flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
     else:
         print "Finished!"
         print "Sudoku solved: {}".format(sudoku_is_valid(sudoku_values))
+        return sudoku_values
+
+if __name__ == "__main__":
+    input_filename = "../data/sudoku_easy1_in.csv"
+    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+    sudoku_values = solve_sudoku(sudoku_values)

@@ -46,7 +46,7 @@ def sudoku_is_valid(sudoku_values):
                 return False
     return True
 
-def update_candidate_answers_exhaustive_combination(candidate_answers):
+def update_candidate_answers_exhaustive_search(candidate_answers):
     updated_answers = candidate_answers
     # # add one to the last element 
     updated_answers[-1] += 1

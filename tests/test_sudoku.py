@@ -10,19 +10,6 @@ def load_given_sudoku_answer():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     return sudoku_values
 
-def get_indices_from_same_block(index):
-    """ Get indices that fall in the same block as the given index
-    The sudoku values are zero indexed, so [0,1,2] form a block, 
-    [3,4,5] form a block, and [6,7,8] form a block.
-    For example, given index 5, return ndarray array([3,4,5]).
-    """
-    if index in np.array([0,1,2]):
-        return np.array([0,1,2])
-    elif index in np.array([3,4,5]):
-        return np.array([3,4,5])
-    elif index in np.array([6,7,8]):
-        return np.array([6,7,8])
-        
 def test_sudoku_validity_using_given_answer():
     """ The answer provided in the challenge is valid
     """

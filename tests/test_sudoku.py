@@ -69,7 +69,7 @@ def test_sudoku_validity_violating_block_uniqueness():
     """
     sudoku_values = load_given_sudoku_answer()
     
-    # # randomly generate a column index and two row indices
+    # # randomly select two (different) cells that are in the same block
     row1 = np.random.randint(9)
     column1 = np.random.randint(9)
     row2 = get_indices_from_same_block(row1)[np.random.randint(2)]
@@ -80,3 +80,53 @@ def test_sudoku_validity_violating_block_uniqueness():
     sudoku_values[[row2],[column2]] = sudoku_values[[row1],[column1]]
     
     assert sudoku_is_valid(sudoku_values) == False
+
+def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
+    """ Test the situation when only one value is feasible for the given cell
+    The input is produced using a valid sudoku answer. Any randomly chosen 
+    cell should only have one feasible value, which is the value in the cell.
+    """
+    sudoku_values = load_given_sudoku_answer()
+    row = np.random.randint(9)
+    column = np.random.randint(9)
+    cell_value = sudoku_values[row,column]
+    feasible_values = find_feasible_values(sudoku_values,row,column)
+    assert len(feasible_values) == 1
+    assert feasible_values[0] == cell_value
+    
+def test_find_feasible_values_one_feasible_value_with_incomplete_sudoku():
+    """ Test the situation when only one value is feasible for the given cell
+    The input is produced using a valid sudoku answer, and delete (replace with
+    0) a randomly selected number, say 5, from the sudoku. There is just one 
+    feasible value for zero-valued cells.
+    """
+    sudoku_values = load_given_sudoku_answer()
+    row = np.random.randint(9)
+    column = np.random.randint(9)
+    cell_value = sudoku_values[row,column]
+    sudoku_values[sudoku_values == cell_value] = 0
+    feasible_values = find_feasible_values(sudoku_values,row,column)
+    assert len(feasible_values) == 1
+    assert feasible_values[0] == cell_value
+    
+def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
+    """ Test the situation when two values are feasible for the given cell
+    The input is produced using a valid sudoku answer, and delete (replace with
+    0) two randomly selected numbers, say 5 and 8, from the sudoku. There are 
+    two feasible values for zero-valued cells.
+    """
+    sudoku_values = load_given_sudoku_answer()
+    row = np.random.randint(9)
+    column = np.random.randint(9)
+    cell_value = sudoku_values[row,column]
+    sudoku_values[sudoku_values == cell_value] = 0
+    another_cell_value = cell_value
+    while another_cell_value == cell_value:
+        another_cell_value = np.random.random_integers(9)
+    sudoku_values[sudoku_values == another_cell_value] = 0
+    feasible_values = find_feasible_values(sudoku_values,row,column)
+    
+    assert len(feasible_values) == 2
+    assert set(feasible_values) == set([cell_value,another_cell_value])
+
+    

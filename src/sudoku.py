@@ -1,4 +1,5 @@
 import numpy as np
+import argparse
 
 def get_indices_from_same_block(index):
     """ Get indices that fall in the same block as the given index
@@ -95,7 +96,6 @@ def find_feasible_values(sudoku_values,row,column):
     return feasible_values
 
 def solve_sudoku(sudoku_values):
-    print sudoku_values
     """ Sudoku solver
     
     Argument: 
@@ -111,6 +111,8 @@ def solve_sudoku(sudoku_values):
     - if there is only one feasible value, fill it
     - otherwise, wait
     """
+    # print sudoku_values
+
     # # find empty cells
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     number_of_cell_filled_this_round = 0
@@ -129,12 +131,13 @@ def solve_sudoku(sudoku_values):
             if len(feasible_values) == 1:
                 sudoku_values[row,column] = feasible_values[0]
                 number_of_cell_filled_this_round += 1
-                print "Fill row {}, column {}, with {}".format(
-                    row,column,feasible_values[0])
-                print sudoku_values
+                # print "Fill row {}, column {}, with {}".format(
+                    # row,column,feasible_values[0])
+                # print sudoku_values
             # # otherwise do nothing
             else:
-                print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
+                pass
+                # print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
                 
         # # no cell is filled, stuck
         if number_of_cell_filled_this_round == 0:
@@ -149,7 +152,11 @@ def solve_sudoku(sudoku_values):
         return sudoku_values
 
 if __name__ == "__main__":
-    input_filename = "../data/sudoku_easy1_in.csv"
-    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
-    sudoku_values = solve_sudoku(sudoku_values)
+    parser = argparse.ArgumentParser(description="Solve Sudoku")
+    parser.add_argument(
+        "-f",dest="filename",metavar="FILENAME",
+        help="Sudoku input filename")
+    args = parser.parse_args()
     
+    sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
+    sudoku_values = solve_sudoku(sudoku_values)

@@ -162,6 +162,110 @@ def test_solve_sudoku_easy1():
     sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
     assert (sudoku_expected_output == sudoku_output).all()
 
+def test_solve_sudoku_easy2():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 2, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy2_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy2_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy3():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 3, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy3_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy3_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy4():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 4, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy4_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy4_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy5():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 5, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy5_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy5_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy6():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 6, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy6_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy6_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy7():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 7, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy7_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy7_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy8():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 8, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy8_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy8_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_easy9():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 9, easy)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_easy9_in.csv"
+    sudoku_output_filename = "../data/sudoku_easy9_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+
 def test_solve_sudoku_medium10():
     """ Test if the sudoku solver gives the same solution
     

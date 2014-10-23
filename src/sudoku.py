@@ -95,62 +95,6 @@ def find_feasible_values(sudoku_values,row,column):
     feasible_values = np.setdiff1d(possible_sudoku_values,appeared_values)
     return feasible_values
 
-def solve_sudoku_simplistic(sudoku_values):
-    """ Sudoku solver
-    
-    Argument: 
-        sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
-    
-    Return:
-        sudoku_values (9x9 ndarray), with empty cells (typically in the form
-        of 0, but could be any number other than 1 - 9) filled
-        
-    Algorithm:
-    For each unfilled cell, determine feasible values based on row, column and 
-    block uniqueness
-    - if there is only one feasible value, fill it
-    - otherwise, wait
-    """
-    # print sudoku_values
-
-    # # find empty cells
-    flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
-    number_of_cell_filled_this_round = 0
-    
-    # # while empty cells exist
-    while flag_empty_cells.sum() > 0: 
-        # # find row, column of empty cells
-        positions_empty_cells = np.where(flag_empty_cells)
-        rows_empty_cells = positions_empty_cells[0]
-        columns_empty_cells = positions_empty_cells[1]
-        for row, column in zip(rows_empty_cells,columns_empty_cells):
-            # # find feasible values for the empty cell
-            feasible_values = find_feasible_values(sudoku_values,row,column)
-            
-            # # if only one value is feasible, fill it
-            if len(feasible_values) == 1:
-                sudoku_values[row,column] = feasible_values[0]
-                number_of_cell_filled_this_round += 1
-                # print "Fill row {}, column {}, with {}".format(
-                    # row,column,feasible_values[0])
-                # print sudoku_values
-            # # otherwise do nothing
-            else:
-                pass
-                # print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
-                
-        # # no cell is filled, stuck
-        if number_of_cell_filled_this_round == 0:
-            break
-            
-        # # restart the process
-        flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
-        number_of_cell_filled_this_round = 0
-    else:
-        print "Finished!"
-        print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
-    return sudoku_values
-
 def solve_sudoku(sudoku_values):
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     number_empty_cells = flag_empty_cells.sum()

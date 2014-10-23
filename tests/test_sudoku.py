@@ -161,3 +161,17 @@ def test_solve_sudoku_easy1():
     sudoku_output = solve_sudoku(sudoku_input)
     sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
     assert (sudoku_expected_output == sudoku_output).all()
+
+def test_solve_sudoku_medium10():
+    """ Test if the sudoku solver gives the same solution
+    
+    Input and output files are from online (Sample problem 10, medium)
+    http://www.nikoli.com/en/puzzles/sudoku/
+    """
+    sudoku_input_filename = "../data/sudoku_medium10_in.csv"
+    sudoku_output_filename = "../data/sudoku_medium10_out.csv"
+    sudoku_input = np.loadtxt(sudoku_input_filename,delimiter=",",dtype="i4")
+    sudoku_output = solve_sudoku(sudoku_input)
+    sudoku_expected_output = np.loadtxt(sudoku_output_filename,delimiter=",",dtype="i4")
+    assert (sudoku_expected_output == sudoku_output).all()
+    

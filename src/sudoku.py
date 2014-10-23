@@ -95,7 +95,7 @@ def find_feasible_values(sudoku_values,row,column):
     feasible_values = np.setdiff1d(possible_sudoku_values,appeared_values)
     return feasible_values
 
-def solve_sudoku(sudoku_values):
+def solve_sudoku_simplistic(sudoku_values):
     """ Sudoku solver
     
     Argument: 
@@ -151,7 +151,7 @@ def solve_sudoku(sudoku_values):
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
     return sudoku_values
 
-def solve_sudoku_recursive(sudoku_values):
+def solve_sudoku(sudoku_values):
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     number_empty_cells = flag_empty_cells.sum()
     if number_empty_cells > 0:
@@ -168,7 +168,7 @@ def solve_sudoku_recursive(sudoku_values):
             new_sudoku_values = sudoku_values.copy()
             new_sudoku_values[row_first_empty_cell, column_first_empty_cell] = \
                 value_first_empty_cell
-            sudoku_solution = solve_sudoku_recursive(new_sudoku_values)
+            sudoku_solution = solve_sudoku(new_sudoku_values)
             if sudoku_solution is not None:
                 return sudoku_solution
     elif validate_sudoku(sudoku_values):
@@ -183,6 +183,6 @@ if __name__ == "__main__":
     
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
     print sudoku_values
-    sudoku_solution = solve_sudoku_recursive(sudoku_values)
+    sudoku_solution = solve_sudoku(sudoku_values)
     print sudoku_solution
     print "Sudoku solved: {}".format(validate_sudoku(sudoku_solution))

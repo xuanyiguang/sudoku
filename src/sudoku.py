@@ -113,8 +113,9 @@ def solve_sudoku(sudoku_values):
     """
     # # find empty cells
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
+    number_of_cell_filled_this_round = 0
     
-    # while empty cells exist
+    # # while empty cells exist
     while flag_empty_cells.sum() > 0: 
         # # find row, column of empty cells
         positions_empty_cells = np.where(flag_empty_cells)
@@ -127,15 +128,21 @@ def solve_sudoku(sudoku_values):
             # # if only one value is feasible, fill it
             if len(feasible_values) == 1:
                 sudoku_values[row,column] = feasible_values[0]
+                number_of_cell_filled_this_round += 1
                 print "Fill row {}, column {}, with {}".format(
                     row,column,feasible_values[0])
                 print sudoku_values
             # # otherwise do nothing
             else:
                 print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
-        
+                
+        # # no cell is filled, stuck
+        if number_of_cell_filled_this_round == 0:
+            break
+            
         # # restart the process
         flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
+        number_of_cell_filled_this_round = 0
     else:
         print "Finished!"
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))

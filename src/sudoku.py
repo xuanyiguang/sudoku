@@ -19,29 +19,32 @@ def get_indices_from_same_block(index):
         return np.array([6,7,8])
         
 def validate_sudoku(sudoku_values):
-    """ Test if sudoku solution is valid
+    """ Validate a given sudoku solution
     
     Argument:
         sudoku_values (9x9 ndarray, required) -- sudoku solution
         
     Return:
         True if the solution is valid:
-            place the numbers 1 to 9 in the empty squares so that 
-            each row, each column and each 3x3 block contains 
+            - place only numbers 1 to 9 in the empty cells
+            - each row, each column and each 3x3 block contains 
             the same number only once
         False otherwise
     """
-    # # no values <=0 or >=10
+    # # should only have numbers 1 to 9
     if np.min(sudoku_values) <= 0 or np.max(sudoku_values) >= 10:
         return False
+        
     # # test row uniqueness
     for row in range(9):
         if len(np.unique(sudoku_values[row,:])) != 9:
             return False
+            
     # # test column uniqueness
     for column in range(9):
         if len(np.unique(sudoku_values[:,column])) != 9:
             return False
+            
     # # test block uniqueness
     for first_row in range(0,9,3):
         for first_column in range(0,9,3):
@@ -49,6 +52,8 @@ def validate_sudoku(sudoku_values):
             column_range = get_indices_from_same_block(first_column)
             if len(np.unique(sudoku_values[row_range][:,column_range])) != 9:
                 return False
+    
+    # # otherwise
     return True
     
 def find_feasible_values(sudoku_values,row,column):
@@ -69,20 +74,24 @@ def find_feasible_values(sudoku_values,row,column):
     - Only values outside of the given cell will be used to calculate feasible values. Or, the value of the given cell will not be used.
     """
     # # set current cell value to 0 (not to use it)
+    # # this could otherwise cause problems with filled sudoku
     sudoku_values[row,column] = 0
-    # # values in the given row
+    
+    # # collect values in the given row
     row_values = sudoku_values[row,:]
-    # # values in the given column
+    
+    # # collect values in the given column
     column_values = sudoku_values[:,column]
-    # # values in the given block
+    
+    # # collect values in the given block
     row_block_range = get_indices_from_same_block(row)
     column_block_range = get_indices_from_same_block(column)
     block_values = sudoku_values[row_block_range][:,column_block_range]
     
-    appearred_values = np.append(np.append(row_values,column_values),block_values)
-    unique_appearred_values = np.unique(appearred_values)
+    # # subtract (setdiff) appeared values from numbers 1 - 9
+    appeared_values = np.append(np.append(row_values,column_values),block_values)
     possible_sudoku_values = np.arange(1,10)
-    feasible_values = np.setdiff1d(possible_sudoku_values,unique_appearred_values)
+    feasible_values = np.setdiff1d(possible_sudoku_values,appeared_values)
     return feasible_values
 
 def solve_sudoku(sudoku_values):
@@ -102,21 +111,31 @@ def solve_sudoku(sudoku_values):
     - if there is only one feasible value, fill it
     - otherwise, wait
     """
+    # # find empty cells
+    flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     
-    flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
-    while flag_not_answered.sum() > 0:
-        position_not_answered = np.where(flag_not_answered)
-        row_indices_not_answered = position_not_answered[0]
-        column_indices_not_answered = position_not_answered[1]
-        for row, column in zip(row_indices_not_answered,column_indices_not_answered):
+    # while empty cells exist
+    while flag_empty_cells.sum() > 0: 
+        # # find row, column of empty cells
+        positions_empty_cells = np.where(flag_empty_cells)
+        rows_empty_cells = positions_empty_cells[0]
+        columns_empty_cells = positions_empty_cells[1]
+        for row, column in zip(rows_empty_cells,columns_empty_cells):
+            # # find feasible values for the empty cell
             feasible_values = find_feasible_values(sudoku_values,row,column)
+            
+            # # if only one value is feasible, fill it
             if len(feasible_values) == 1:
                 sudoku_values[row,column] = feasible_values[0]
-                print "Fill row {}, column {}, with {}".format(row,column,feasible_values[0])
+                print "Fill row {}, column {}, with {}".format(
+                    row,column,feasible_values[0])
                 print sudoku_values
+            # # otherwise do nothing
             else:
                 print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
-        flag_not_answered = (sudoku_values <= 0) | (sudoku_values >= 10)
+        
+        # # restart the process
+        flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     else:
         print "Finished!"
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
@@ -126,3 +145,4 @@ if __name__ == "__main__":
     input_filename = "../data/sudoku_easy1_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     sudoku_values = solve_sudoku(sudoku_values)
+    

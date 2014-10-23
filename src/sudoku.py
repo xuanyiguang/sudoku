@@ -149,8 +149,25 @@ def solve_sudoku(sudoku_values):
     else:
         print "Finished!"
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
-        return sudoku_values
+    return sudoku_values
 
+def search(sudoku_values):
+    flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
+    # # find row, column of empty cells
+    positions_empty_cells = np.where(flag_empty_cells)
+    number_empty_cells = flag_empty_cells.sum()
+    if number_empty_cells > 0:
+        row = positions_empty_cells[0][0]
+        column = positions_empty_cells[1][0]
+        feasible_values = find_feasible_values(sudoku_values,row,column)
+        for value in feasible_values:
+            print number_empty_cells, row, column, value
+            new_sudoku_values = sudoku_values.copy()
+            new_sudoku_values[row,column] = value
+            search(new_sudoku_values)
+    elif validate_sudoku(sudoku_values):
+        print sudoku_values
+        
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Solve Sudoku")
     parser.add_argument(
@@ -159,4 +176,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
-    sudoku_values = solve_sudoku(sudoku_values)
+    print sudoku_values
+    search(sudoku_values)

@@ -151,22 +151,28 @@ def solve_sudoku(sudoku_values):
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
     return sudoku_values
 
-def search(sudoku_values):
+def solve_sudoku_recursive(sudoku_values):
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
-    # # find row, column of empty cells
-    positions_empty_cells = np.where(flag_empty_cells)
     number_empty_cells = flag_empty_cells.sum()
     if number_empty_cells > 0:
-        row = positions_empty_cells[0][0]
-        column = positions_empty_cells[1][0]
-        feasible_values = find_feasible_values(sudoku_values,row,column)
-        for value in feasible_values:
-            print number_empty_cells, row, column, value
+        # # find row, column of first empty cell
+        positions_empty_cells = np.where(flag_empty_cells)
+        row_first_empty_cell = positions_empty_cells[0][0]
+        column_first_empty_cell = positions_empty_cells[1][0]
+        feasible_values_first_empty_cell = find_feasible_values(
+            sudoku_values,
+            row_first_empty_cell,
+            column_first_empty_cell)
+        for value_first_empty_cell in feasible_values_first_empty_cell:
+            print number_empty_cells, row_first_empty_cell, column_first_empty_cell, value_first_empty_cell
             new_sudoku_values = sudoku_values.copy()
-            new_sudoku_values[row,column] = value
-            search(new_sudoku_values)
+            new_sudoku_values[row_first_empty_cell, column_first_empty_cell] = \
+                value_first_empty_cell
+            sudoku_solution = solve_sudoku_recursive(new_sudoku_values)
+            if sudoku_solution is not None:
+                return sudoku_solution
     elif validate_sudoku(sudoku_values):
-        print sudoku_values
+        return sudoku_values
         
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Solve Sudoku")
@@ -177,4 +183,6 @@ if __name__ == "__main__":
     
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
     print sudoku_values
-    search(sudoku_values)
+    sudoku_solution = solve_sudoku_recursive(sudoku_values)
+    print sudoku_solution
+    print "Sudoku solved: {}".format(validate_sudoku(sudoku_solution))

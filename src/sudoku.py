@@ -96,35 +96,72 @@ def find_feasible_values(sudoku_values,row,column):
     return feasible_values
 
 def solve_sudoku(sudoku_values):
+    """ Solve sudoku with recursion
+    
+    Argument: 
+        sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
+    
+    Return:
+        sudoku_values (9x9 ndarray), with empty cells (typically in the form
+        of 0, but could be any number other than 1 - 9) filled
+        
+    Algorithm:
+        - For each unfilled cell, determine feasible values based on row, 
+        column and block uniqueness. 
+        - Try to fill the cell with one of the feasible values and 
+        recursively call the function again.
+        - If the number of feasible values is 0 for some cell, this would
+        be a dead end. Current function call will finish and not return
+        anything.
+        - If all the cells are filled successfully, solution is found.
+        By convention, published sudoku should have one unique solution.
+    """
+    # # find all the empty cells
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     number_empty_cells = flag_empty_cells.sum()
+    
+    # # if sudoku unfinished
     if number_empty_cells > 0:
-        # # find row, column of first empty cell
+        # # find row, column of the first empty cell
         positions_empty_cells = np.where(flag_empty_cells)
         row_first_empty_cell = positions_empty_cells[0][0]
         column_first_empty_cell = positions_empty_cells[1][0]
+        
+        # # get all feasible values for the first empty cell
         feasible_values_first_empty_cell = find_feasible_values(
             sudoku_values,
             row_first_empty_cell,
             column_first_empty_cell)
+        
+        # # loop through each feasible value
         for value_first_empty_cell in feasible_values_first_empty_cell:
             print number_empty_cells, row_first_empty_cell, column_first_empty_cell, value_first_empty_cell
+            
+            # # fill in the feasible value and solve recursively
             new_sudoku_values = sudoku_values.copy()
             new_sudoku_values[row_first_empty_cell, column_first_empty_cell] = \
                 value_first_empty_cell
             sudoku_solution = solve_sudoku(new_sudoku_values)
+            
+            # # pass the solution up the recursion chain
             if sudoku_solution is not None:
                 return sudoku_solution
+    
+    # # sudoku filled successfully
     elif validate_sudoku(sudoku_values):
         return sudoku_values
         
 if __name__ == "__main__":
+    # # config argument parser for command line input
     parser = argparse.ArgumentParser(description="Solve Sudoku")
     parser.add_argument(
         "-f",dest="filename",metavar="FILENAME",
         help="Sudoku input filename")
+    
+    # # get command line input
     args = parser.parse_args()
     
+    # # solve sudoku
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
     print sudoku_values
     sudoku_solution = solve_sudoku(sudoku_values)

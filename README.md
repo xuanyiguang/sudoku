@@ -29,7 +29,9 @@ Right now, of the 21 sudoku puzzles (one given by the challenge, 20 found online
 
 * The first and brutal force solution would be to iterate through 1 - 9 for all unfilled cells. But some simple calculation shows this is almost infeasible. Validate a sudoku (as I timed it) takes about 11.7 us. If a sudoku has 26 unfilled cells, this would take 9^26 * 11.7 us = 2.4e12 years. OK, think of something else.
 
-* Apparently, for an unfilled cell, not all number 1 - 9 is feasible. Eliminating some possibilities should expedite the search. So I write a function to produce feasible values of a given cell, by excluding numbers appeared in the same row, same column and same block. How to implement the search algorithm is a little bit complicated. I thought about building a tree structure, with each layer being an unfilled cell, and nodes in that layer being the feasible values of the unfilled cell. Recursion comes to mind due to the repetitive nature of the search. 
+* Apparently, for an unfilled cell, not all number 1 - 9 is feasible. Eliminating some possibilities should expedite the search. So I write a function to produce feasible values of a given cell, by excluding numbers appeared in the same row, same column and same block. The search algorithm would simply find unfilled cells, and fill it if only one value is feasible. The solution algorithm is pretty simple, but out of the ten examples that I give it to solve at the time, only six is solved. The other four needs to go through some kind of trial and error. OK, think of something more intelligent.
+
+* How to implement the search algorithm is a little bit complicated. I thought about building a tree structure, with each layer being an unfilled cell, and nodes in that layer being the feasible values of the unfilled cell. Recursion comes to mind due to the repetitive nature of the search. 
 
 * Right now, of the 21 sudoku puzzles (one given by the challenge, 20 found online: 9 at easy level, 8 at medium level, 3 at hard level), 20 can be solved quickly. The only exception is sudoku_medium16, which is taking a lot of time.
 

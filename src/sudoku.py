@@ -161,7 +161,7 @@ def find_cell_value_by_exclusion(sudoku_values,row,column):
     # # if none of the above works (i.e., returns anything)
     return feasible_values
     
-def solve_sudoku_simplistic(sudoku_values,flag_exclusion=False):
+def solve_sudoku_simplistic(sudoku_values,flag_exclusion=True):
     """ Sudoku solver
     
     Argument: 
@@ -219,7 +219,7 @@ def solve_sudoku_simplistic(sudoku_values,flag_exclusion=False):
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
     return sudoku_values
     
-def solve_sudoku(sudoku_values,flag_exclusion=False):
+def solve_sudoku_recursion(sudoku_values,flag_exclusion=True):
     """ Solve sudoku with recursion
     
     Argument: 
@@ -281,6 +281,11 @@ def solve_sudoku(sudoku_values,flag_exclusion=False):
     elif validate_sudoku(sudoku_values):
         return sudoku_values
         
+def solve_sudoku(sudoku_values,flag_exclusion=True):
+    sudoku_values = solve_sudoku_simplistic(sudoku_values,flag_exclusion)
+    sudoku_solution = solve_sudoku_recursion(sudoku_values,flag_exclusion)
+    return sudoku_solution
+    
 if __name__ == "__main__":
     # # config argument parser for command line input
     parser = argparse.ArgumentParser(description="Solve Sudoku")
@@ -297,8 +302,10 @@ if __name__ == "__main__":
     # # solve sudoku
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
     print sudoku_values
-    sudoku_values = solve_sudoku_simplistic(sudoku_values,flag_exclusion=args.exclusion)
-    print sudoku_values
     sudoku_solution = solve_sudoku(sudoku_values,flag_exclusion=args.exclusion)
     print sudoku_solution
     print "Sudoku solved: {}".format(validate_sudoku(sudoku_solution))
+    
+    # # TODO: add logger
+    
+    # # TODO: produce csv file as output

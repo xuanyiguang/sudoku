@@ -4,8 +4,11 @@ import pytest
 from src.sudoku import *
 
 """ Unit tests for the following functions:
+
 sudoku::validate_sudoku
 sudoku::find_feasible_values
+sudoku::find_cell_value_by_exclusion
+
 """
 
 def load_given_sudoku_answer():
@@ -143,6 +146,16 @@ def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
     assert set(feasible_values) == set([cell_value,another_cell_value])
 
 def test_find_cell_value_by_exclusion_from_same_block():
+    """ Test find_cell_value_by_exclusion based on block uniqueness
+    
+    The input is from sudoku_medium16.
+    Value of cell on row 5, column 7 can be determined uniquely:
+    In the block that this cell belongs to (rows 3-5, columns 6-8),
+    row 3 cannot have 9 because of the 9 in row 3, column 5; 
+    row 4 cannot have 9 because of the 9 in row 4, column 1;
+    cell at row 5, column 6 cannot be 9 because of the 9 in row 0, column 6.
+    Therefore the only cell in this block that can be 9 is row 5, column 7.
+    """
     input_filename = "../data/sudoku_medium16_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 5
@@ -152,6 +165,14 @@ def test_find_cell_value_by_exclusion_from_same_block():
     assert cell_value[0] == 9
     
 def test_find_cell_value_by_exclusion_from_same_row():
+    """ Test find_cell_value_by_exclusion based on row uniqueness
+    
+    The input is from sudoku_easy6.
+    Value of cell on row 4, column 8 can be determined uniquely:
+    In row 4, column 0 cannot be 3 because of the 3 in row 7, column 0; 
+    column 4 cannot be 3 because of the 3 in row 5, column 4.
+    Therefore the only cell in this row that can be 3 is row 4, column 8.
+    """
     input_filename = "../data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 4
@@ -161,6 +182,14 @@ def test_find_cell_value_by_exclusion_from_same_row():
     assert cell_value[0] == 3
     
 def test_find_cell_value_by_exclusion_from_same_column():
+    """ Test find_cell_value_by_exclusion based on column uniqueness
+    
+    The input is from sudoku_easy6.
+    Value of cell on row 8, column 4 can be determined uniquely:
+    In column 4, row 0 cannot be 1 because of the 1 in row 0, column 3; 
+    row 4 cannot be 1 because of the 1 in row 4, column 5.
+    Therefore the only cell in this column that can be 1 is row 8, column 4.
+    """
     input_filename = "../data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 8
@@ -170,6 +199,14 @@ def test_find_cell_value_by_exclusion_from_same_column():
     assert cell_value[0] == 1
     
 def test_find_cell_value_by_exclusion_multiple_situation_in_one_sudoku():
+    """ Test find_cell_value_by_exclusion on multiple cells
+    
+    Cell value at row 0, column 3 has to be 3 by block uniqueness or row uniqueness or column uniqueness.
+    Cell value at row 6, column 0 has to be 5 by row uniqueness.
+    Cell value at row 7, column 8 has to be 6 by block uniqueness or column uniqueness.
+    Cell value at row 0, column 5 can be 4, 7, or 9. Function find_cell_value_by_exclusion returns the same result as find_feasible_values.
+    Cell value at row 3, column 3 can be 5, 7, 8, or 9. Function find_cell_value_by_exclusion returns the same result as find_feasible_values.
+    """
     sudoku_values = np.array([
         [6,0,0,0,0,0,0,0,5],
         [0,3,8,0,5,0,2,7,0],

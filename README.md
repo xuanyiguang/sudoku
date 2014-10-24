@@ -3,7 +3,7 @@ Sudoku Solver
 
 Coding Challenge
 
-# Solution algorithm
+## Solution algorithm
 
 Here is how the search for sudoku solution is carried out currently:
 
@@ -16,7 +16,7 @@ Here is how the search for sudoku solution is carried out currently:
 
 Right now, of the 21 sudoku puzzles (one given by the challenge, 20 found online: 9 at easy level, 8 at medium level, 3 at hard level), 20 can be solved quickly. The only exception is sudoku_medium16, which is taking a lot of time.
 
-# How to run
+## How to run
 
 * To solve a sudoku in the command line:
 	* Go to the root of the repo
@@ -25,7 +25,7 @@ Right now, of the 21 sudoku puzzles (one given by the challenge, 20 found online
 * To run the tests:
 	* Type `py.test tests`
 
-# Notes for myself
+## Notes for myself
 
 * The first and brutal force solution would be to iterate through 1 - 9 for all unfilled cells. But some simple calculation shows this is almost infeasible. Validate a sudoku (as I timed it) takes about 11.7 us. If a sudoku has 26 unfilled cells, this would take 9^26 * 11.7 us = 2.4e12 years. OK, think of something else.
 

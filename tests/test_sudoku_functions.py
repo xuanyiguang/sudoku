@@ -147,25 +147,66 @@ def test_find_cell_value_by_exclusion_from_same_block():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 5
     column = 7
-    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
-    assert len(unique_cell_value) == 1
-    assert unique_cell_value[0] == 9
+    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_value) == 1
+    assert cell_value[0] == 9
     
 def test_find_cell_value_by_exclusion_from_same_row():
     input_filename = "../data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 4
     column = 8
-    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
-    assert len(unique_cell_value) == 1
-    assert unique_cell_value[0] == 3
+    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_value) == 1
+    assert cell_value[0] == 3
     
 def test_find_cell_value_by_exclusion_from_same_column():
     input_filename = "../data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 8
     column = 4
-    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
-    assert len(unique_cell_value) == 1
-    assert unique_cell_value[0] == 1
+    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_value) == 1
+    assert cell_value[0] == 1
     
+def test_find_cell_value_by_exclusion_multiple_situation_in_one_sudoku():
+    sudoku_values = np.array([
+        [6,0,0,0,0,0,0,0,5],
+        [0,3,8,0,5,0,2,7,0],
+        [0,5,7,1,0,8,3,6,0],
+        [0,0,3,0,4,0,6,0,0],
+        [0,7,0,6,0,2,0,9,0],
+        [0,0,6,0,3,0,7,0,0],
+        [0,6,9,2,0,3,1,8,0],
+        [0,2,1,0,8,0,9,3,0],
+        [3,0,0,0,0,0,0,0,7]])
+    
+    row = 0
+    column = 3
+    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_values) == 1
+    assert cell_values[0] == 3
+    
+    row = 6
+    column = 0
+    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_values) == 1
+    assert cell_values[0] == 5
+
+    row = 7
+    column = 8
+    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_values) == 1
+    assert cell_values[0] == 6
+    
+    row = 0
+    column = 5
+    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_values) == 3
+    assert set(cell_values) == set([4,7,9])
+
+    row = 3
+    column = 3
+    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(cell_values) == 4
+    assert set(cell_values) == set([5,7,8,9])

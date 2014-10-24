@@ -142,3 +142,30 @@ def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
     assert len(feasible_values) == 2
     assert set(feasible_values) == set([cell_value,another_cell_value])
 
+def test_find_cell_value_by_exclusion_from_same_block():
+    input_filename = "../data/sudoku_medium16_in.csv"
+    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+    row = 5
+    column = 7
+    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(unique_cell_value) == 1
+    assert unique_cell_value[0] == 9
+    
+def test_find_cell_value_by_exclusion_from_same_row():
+    input_filename = "../data/sudoku_easy6_in.csv"
+    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+    row = 4
+    column = 8
+    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(unique_cell_value) == 1
+    assert unique_cell_value[0] == 3
+    
+def test_find_cell_value_by_exclusion_from_same_column():
+    input_filename = "../data/sudoku_easy6_in.csv"
+    sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
+    row = 8
+    column = 4
+    unique_cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    assert len(unique_cell_value) == 1
+    assert unique_cell_value[0] == 1
+    

@@ -6,8 +6,8 @@ from src.sudoku import *
 """ Unit tests for the following functions:
 
 sudoku::validate_sudoku
+sudoku::exclude_values_appeared_in_same_row_column_block
 sudoku::find_feasible_values
-sudoku::find_cell_value_by_exclusion
 
 """
 
@@ -92,7 +92,7 @@ def test_validate_sudoku_violating_block_uniqueness():
     
     assert validate_sudoku(sudoku_values) == False
 
-def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
+def test_exclude_values_appeared_one_feasible_value_with_valid_sudoku():
     """ Test the situation when only one value is feasible for the given cell
     
     The input is produced using a valid sudoku answer. Any randomly chosen 
@@ -102,11 +102,11 @@ def test_find_feasible_values_one_feasible_value_with_valid_sudoku():
     row = np.random.randint(9)
     column = np.random.randint(9)
     cell_value = sudoku_values[row,column]
-    feasible_values = find_feasible_values(sudoku_values,row,column)
+    feasible_values = exclude_values_appeared_in_same_row_column_block(sudoku_values,row,column)
     assert len(feasible_values) == 1
     assert feasible_values[0] == cell_value
     
-def test_find_feasible_values_one_feasible_value_with_incomplete_sudoku():
+def test_exclude_values_appeared_one_feasible_value_with_incomplete_sudoku():
     """ Test the situation when only one value is feasible for the given cell
     
     The input is produced using a valid sudoku answer, and then delete 
@@ -118,12 +118,12 @@ def test_find_feasible_values_one_feasible_value_with_incomplete_sudoku():
     column = np.random.randint(9)
     cell_value = sudoku_values[row,column]
     sudoku_values[sudoku_values == cell_value] = 0
-    feasible_values = find_feasible_values(sudoku_values,row,column)
+    feasible_values = exclude_values_appeared_in_same_row_column_block(sudoku_values,row,column)
     
     assert len(feasible_values) == 1
     assert feasible_values[0] == cell_value
     
-def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
+def test_exclude_values_appeared_two_feasible_values_with_incomplete_sudoku():
     """ Test the situation when two values are feasible for the given cell
     
     The input is produced using a valid sudoku answer, and then delete 
@@ -140,13 +140,13 @@ def test_find_feasible_values_two_feasible_values_with_incomplete_sudoku():
     while another_cell_value == cell_value:
         another_cell_value = np.random.random_integers(9)
     sudoku_values[sudoku_values == another_cell_value] = 0
-    feasible_values = find_feasible_values(sudoku_values,row,column)
+    feasible_values = exclude_values_appeared_in_same_row_column_block(sudoku_values,row,column)
     
     assert len(feasible_values) == 2
     assert set(feasible_values) == set([cell_value,another_cell_value])
 
-def test_find_cell_value_by_exclusion_from_same_block():
-    """ Test find_cell_value_by_exclusion based on block uniqueness
+def test_find_feasible_values_from_same_block():
+    """ Test find_feasible_values based on block uniqueness
     
     The input is from sudoku_medium16.
     Value of cell on row 5, column 7 can be determined uniquely:
@@ -160,12 +160,12 @@ def test_find_cell_value_by_exclusion_from_same_block():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 5
     column = 7
-    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_value = find_feasible_values(sudoku_values,row,column)
     assert len(cell_value) == 1
     assert cell_value[0] == 9
     
-def test_find_cell_value_by_exclusion_from_same_row():
-    """ Test find_cell_value_by_exclusion based on row uniqueness
+def test_find_feasible_values_from_same_row():
+    """ Test find_feasible_values based on row uniqueness
     
     The input is from sudoku_easy6.
     Value of cell on row 4, column 8 can be determined uniquely:
@@ -177,12 +177,12 @@ def test_find_cell_value_by_exclusion_from_same_row():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 4
     column = 8
-    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_value = find_feasible_values(sudoku_values,row,column)
     assert len(cell_value) == 1
     assert cell_value[0] == 3
     
-def test_find_cell_value_by_exclusion_from_same_column():
-    """ Test find_cell_value_by_exclusion based on column uniqueness
+def test_find_feasible_values_from_same_column():
+    """ Test find_feasible_values based on column uniqueness
     
     The input is from sudoku_easy6.
     Value of cell on row 8, column 4 can be determined uniquely:
@@ -194,18 +194,18 @@ def test_find_cell_value_by_exclusion_from_same_column():
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 8
     column = 4
-    cell_value = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_value = find_feasible_values(sudoku_values,row,column)
     assert len(cell_value) == 1
     assert cell_value[0] == 1
     
-def test_find_cell_value_by_exclusion_multiple_situation_in_one_sudoku():
-    """ Test find_cell_value_by_exclusion on multiple cells
+def test_find_feasible_values_multiple_situation_in_one_sudoku():
+    """ Test find_feasible_values on multiple cells
     
     Cell value at row 0, column 3 has to be 3 by block uniqueness or row uniqueness or column uniqueness.
     Cell value at row 6, column 0 has to be 5 by row uniqueness.
     Cell value at row 7, column 8 has to be 6 by block uniqueness or column uniqueness.
-    Cell value at row 0, column 5 can be 4, 7, or 9. Function find_cell_value_by_exclusion returns the same result as find_feasible_values.
-    Cell value at row 3, column 3 can be 5, 7, 8, or 9. Function find_cell_value_by_exclusion returns the same result as find_feasible_values.
+    Cell value at row 0, column 5 can be 4, 7, or 9. Function find_feasible_values returns the same result as exclude_values_appeared_in_same_row_column_block.
+    Cell value at row 3, column 3 can be 5, 7, 8, or 9. Function find_feasible_values returns the same result as exclude_values_appeared_in_same_row_column_block.
     """
     sudoku_values = np.array([
         [6,0,0,0,0,0,0,0,5],
@@ -220,30 +220,30 @@ def test_find_cell_value_by_exclusion_multiple_situation_in_one_sudoku():
     
     row = 0
     column = 3
-    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 1
     assert cell_values[0] == 3
     
     row = 6
     column = 0
-    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 1
     assert cell_values[0] == 5
 
     row = 7
     column = 8
-    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 1
     assert cell_values[0] == 6
     
     row = 0
     column = 5
-    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 3
     assert set(cell_values) == set([4,7,9])
 
     row = 3
     column = 3
-    cell_values = find_cell_value_by_exclusion(sudoku_values,row,column)
+    cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 4
     assert set(cell_values) == set([5,7,8,9])

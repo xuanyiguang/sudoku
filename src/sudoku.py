@@ -9,7 +9,7 @@ def get_indices_from_same_block(index):
     given index 5, return ndarray array([3,4,5]).
     
     Note:
-    This function works for both rows and columns
+        This function works for both rows and columns
     
     """
     if index in np.array([0,1,2]):
@@ -57,8 +57,9 @@ def validate_sudoku(sudoku_values):
     # # otherwise
     return True
     
-def find_feasible_values(sudoku_values,row,column):
+def exclude_values_appeared_in_same_row_column_block(sudoku_values,row,column):
     """ Return feasible values at the given row and column of a sudoku
+    by excluding numbers that appear on the same row, same column, or same block
     
     Argument:
         sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
@@ -69,9 +70,9 @@ def find_feasible_values(sudoku_values,row,column):
         ndarray that contains the feasible values at the given row and column 
         of the sudoku
     
-    Note: 
-    - Any number that appears on the same row, same column, or same block is NOT feasible. The rest is feasible.
-    - Only values outside of the given cell will be used to calculate feasible values. Or, the value of the given cell will not be used.
+    Algorithm:
+        - Any number that appears on the same row, same column, or same block is NOT feasible and excluded. The rest is feasible.
+        - Only values outside of the given cell will be used to calculate feasible values. Or, the value of the given cell will not be used.
     """
     # # set current cell value to 0 (not to use it)
     # # this could otherwise cause problems with filled sudoku
@@ -94,24 +95,60 @@ def find_feasible_values(sudoku_values,row,column):
     feasible_values = np.setdiff1d(possible_sudoku_values,appeared_values)
     return feasible_values
 
-def reformat_specified_rows_columns_into_tuple(rows,columns):
+def _reformat_specified_rows_columns_into_tuple(rows,columns):
+    """ Reorganize specified rows and columns into a tuple for looping
+    
+    This is supposed to be a private function called by find_feasible_values only.
+    
+    Argument: 
+        rows (ndarray, required) -- single or multiple rows specified
+        columns (ndarray, required) -- single or multiple columns specified
+        
+    Return:
+        list of tuples that contains all the combinations of rows and columns.
+        
+    For example, rows = array([1,2]), columns = array([3,4]), the function 
+    will return [(1,3),(1,4),(2,3),(2,4)]
+    
+    """
     mesh = np.meshgrid(rows,columns)
     rows_columns_tuple = zip(
         mesh[0].reshape((1,-1))[0],
         mesh[1].reshape((1,-1))[0])
     return rows_columns_tuple
     
-def find_values_infeasible_for_specified_rows_columns(
+def _find_values_infeasible_for_specified_rows_columns(
         sudoku_values,row,column,feasible_values,rows_columns_tuple):
+    """ Find one number (among the remaining feasible values) is infeasible 
+    for any other empty cell in the same block, same row, or same column
+    
+    This is supposed to be a private function called by find_feasible_values only.
+    
+    Argument: 
+        sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
+        row (int, required) -- row number
+        column (int, required) -- column number
+        feasible_values (ndarray, required) -- returned from exclude_values_appeared_in_same_row_column_block(        sudoku_values,row,column)
+        rows_columns_tuple (list of tuple, required) -- returned from _reformat_specified_rows_columns_into_tuple
+        
+    Return:
+        ndarray that contains the feasible values at the given row and column 
+        of the sudoku
+        
+    Note:
+        If the number as described is found, the returned ndarray will only have one element. Otherwise, it will have the same output as exclude_values_appeared_in_same_row_column_block.
+    
+    
+    """
     remaining_values = feasible_values.copy()
     for other_row, other_column in rows_columns_tuple:
-        # # cell is empty and different
+        # # make sure cell is empty and different
         if ((sudoku_values[other_row,other_column] <= 0) \
             or (sudoku_values[other_row,other_column] >= 10)) \
             and ((other_row != row) or (other_column != column)):
             # # get feasible values for other cells
             other_feasible_values = \
-                find_feasible_values(sudoku_values,other_row,other_column)
+                exclude_values_appeared_in_same_row_column_block(sudoku_values,other_row,other_column)
             # # subtract (setdiff) appeared values
             remaining_values = np.setdiff1d(
                 remaining_values,
@@ -124,35 +161,56 @@ def find_values_infeasible_for_specified_rows_columns(
         if len(remaining_values) == 1:
             return remaining_values
     
-def find_cell_value_by_exclusion(sudoku_values,row,column):
-    feasible_values = find_feasible_values(sudoku_values,row,column)
+def find_feasible_values(sudoku_values,row,column):
+    """ Return feasible values at the given row and column of a sudoku
     
-    # # find one feasible value that is infeasible for 
+    Argument:
+        sudoku_values (9x9 ndarray, required) -- given sudoku, can be partially or fully filled
+        row (int, required) -- row number
+        column (int, required) -- column number
+    
+    Returns:
+        ndarray that contains the feasible values at the given row and column 
+        of the sudoku
+    
+    Algorithm:
+        - First, exclude_values_appeared_in_same_row_column_block is called to 
+        exclude numbers that appear on the same row, same column, or same block
+        - Then, among the remaining feasible values, if one number is infeasible
+        for any other empty cell in the same block, same row, or same column, 
+        that number is uniquely the cell value and other feasible values for 
+        the cell become infeasible
+    
+    """
+    feasible_values = exclude_values_appeared_in_same_row_column_block(
+        sudoku_values,row,column)
+    
+    # # try to find one feasible value that is infeasible for 
     # # any other empty cell in the same block
-    rows_columns_tuple = reformat_specified_rows_columns_into_tuple(
+    rows_columns_tuple = _reformat_specified_rows_columns_into_tuple(
         get_indices_from_same_block(row),
         get_indices_from_same_block(column))
-    remaining_values = find_values_infeasible_for_specified_rows_columns(
+    remaining_values = _find_values_infeasible_for_specified_rows_columns(
         sudoku_values,row,column,feasible_values,
         rows_columns_tuple)
     if remaining_values is not None:
         return remaining_values
             
-    # # find one feasible value that is infeasible for 
+    # # try to find one feasible value that is infeasible for 
     # # any other empty cell in the same row
-    rows_columns_tuple = reformat_specified_rows_columns_into_tuple(
+    rows_columns_tuple = _reformat_specified_rows_columns_into_tuple(
         row,np.arange(9))
-    remaining_values = find_values_infeasible_for_specified_rows_columns(
+    remaining_values = _find_values_infeasible_for_specified_rows_columns(
         sudoku_values,row,column,feasible_values,
         rows_columns_tuple)
     if remaining_values is not None:
         return remaining_values
             
-    # # find one feasible value that is infeasible for 
+    # # try to find one feasible value that is infeasible for 
     # # any other empty cell in the same column
-    rows_columns_tuple = reformat_specified_rows_columns_into_tuple(
+    rows_columns_tuple = _reformat_specified_rows_columns_into_tuple(
         np.arange(9),column)
-    remaining_values = find_values_infeasible_for_specified_rows_columns(
+    remaining_values = _find_values_infeasible_for_specified_rows_columns(
         sudoku_values,row,column,feasible_values,
         rows_columns_tuple)
     if remaining_values is not None:
@@ -161,8 +219,11 @@ def find_cell_value_by_exclusion(sudoku_values,row,column):
     # # if none of the above works (i.e., returns anything)
     return feasible_values
     
-def solve_sudoku_simplistic(sudoku_values,flag_exclusion=True):
+def solve_sudoku_simplistic(sudoku_values):
     """ Sudoku solver
+    
+    Algorithm:
+        Determine the feasible values for each unfilled cell, using find_feasible_values. If there is only one feasible value, fill it. Otherwise, wait. 
     
     Argument: 
         sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
@@ -170,12 +231,6 @@ def solve_sudoku_simplistic(sudoku_values,flag_exclusion=True):
     Return:
         sudoku_values (9x9 ndarray), with empty cells (typically in the form
         of 0, but could be any number other than 1 - 9) filled
-        
-    Algorithm:
-    For each unfilled cell, determine feasible values based on row, column and 
-    block uniqueness
-    - if there is only one feasible value, fill it
-    - otherwise, wait
     """
     # print sudoku_values
 
@@ -191,10 +246,7 @@ def solve_sudoku_simplistic(sudoku_values,flag_exclusion=True):
         columns_empty_cells = positions_empty_cells[1]
         for row, column in zip(rows_empty_cells,columns_empty_cells):
             # # find feasible values for the empty cell
-            if flag_exclusion:
-                feasible_values = find_cell_value_by_exclusion(sudoku_values,row,column)
-            else:
-                feasible_values = find_feasible_values(sudoku_values,row,column)
+            feasible_values = find_feasible_values(sudoku_values,row,column)
             
             # # if only one value is feasible, fill it
             if len(feasible_values) == 1:
@@ -219,26 +271,19 @@ def solve_sudoku_simplistic(sudoku_values,flag_exclusion=True):
         print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
     return sudoku_values
     
-def solve_sudoku_recursion(sudoku_values,flag_exclusion=True):
+def solve_sudoku_recursion(sudoku_values):
     """ Solve sudoku with recursion
     
+    Algorithm:
+        Combinatorially fill the empty cells with feasible values until solution is found.
+        The algorithm is implemented recursively: fill the first empty cell with one of the feasible values and apply the algorithm to the resulting sudoku. If the number of feasible values is 0 for some cell, this would be a dead end. Current function call will finish and not return anything. If all the cells are filled successfully, solution is found. By convention, published sudoku should have one unique solution.
+        
     Argument: 
         sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
     
     Return:
         sudoku_values (9x9 ndarray), with empty cells (typically in the form
-        of 0, but could be any number other than 1 - 9) filled
-        
-    Algorithm:
-        - For each unfilled cell, determine feasible values based on row, 
-        column and block uniqueness. 
-        - Try to fill the cell with one of the feasible values and 
-        recursively call the function again.
-        - If the number of feasible values is 0 for some cell, this would
-        be a dead end. Current function call will finish and not return
-        anything.
-        - If all the cells are filled successfully, solution is found.
-        By convention, published sudoku should have one unique solution.
+        of 0, but could be any number other than 1 - 9) filled        
     """
     # # find all the empty cells
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
@@ -252,16 +297,8 @@ def solve_sudoku_recursion(sudoku_values,flag_exclusion=True):
         column_first_empty_cell = positions_empty_cells[1][0]
         
         # # get all feasible values for the first empty cell
-        if flag_exclusion:
-            feasible_values_first_empty_cell = find_cell_value_by_exclusion(
-                sudoku_values,
-                row_first_empty_cell,
-                column_first_empty_cell)
-        else:
-            feasible_values_first_empty_cell = find_feasible_values(
-                sudoku_values,
-                row_first_empty_cell,
-                column_first_empty_cell)
+        feasible_values_first_empty_cell = find_feasible_values(
+            sudoku_values,row_first_empty_cell,column_first_empty_cell)
         
         # # loop through each feasible value
         for value_first_empty_cell in feasible_values_first_empty_cell:
@@ -282,9 +319,21 @@ def solve_sudoku_recursion(sudoku_values,flag_exclusion=True):
         return sudoku_values
         
 def solve_sudoku(sudoku_values,flag_exclusion=True):
-    sudoku_values = solve_sudoku_simplistic(sudoku_values,flag_exclusion)
-    sudoku_solution = solve_sudoku_recursion(sudoku_values,flag_exclusion)
-    return sudoku_solution
+    """ Sudoku solver
+    
+    Algorithm:
+		By default, first apply solve_sudoku_simplistic, then apply solve_sudoku_recursion if the sudoku is not solved yet.
+    
+    Argument: 
+        sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
+    
+    Return:
+        sudoku_values (9x9 ndarray), with empty cells (typically in the form
+        of 0, but could be any number other than 1 - 9) filled
+    """
+    sudoku_values = solve_sudoku_simplistic(sudoku_values)
+    sudoku_values = solve_sudoku_recursion(sudoku_values)
+    return sudoku_values
     
 if __name__ == "__main__":
     # # config argument parser for command line input
@@ -292,9 +341,6 @@ if __name__ == "__main__":
     parser.add_argument(
         "-f",dest="filename",metavar="FILENAME",
         help="Sudoku input filename")
-    parser.add_argument(
-        "--ex", dest="exclusion",action='store_true',
-        help="Whether to determine cell value by exclusion")
     
     # # get command line input
     args = parser.parse_args()
@@ -302,7 +348,7 @@ if __name__ == "__main__":
     # # solve sudoku
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
     print sudoku_values
-    sudoku_solution = solve_sudoku(sudoku_values,flag_exclusion=args.exclusion)
+    sudoku_solution = solve_sudoku(sudoku_values)
     print sudoku_solution
     print "Sudoku solved: {}".format(validate_sudoku(sudoku_solution))
     

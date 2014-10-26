@@ -1,5 +1,6 @@
 import numpy as np
 import argparse
+import sys
 
 def get_indices_from_same_block(index):
     """ Get indices that fall in the same block as the given index
@@ -387,7 +388,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # # load sudoku
-    sudoku_values = np.loadtxt(args.in_filename,delimiter=",",dtype="i4")
+    try:
+        sudoku_values = np.loadtxt(args.in_filename,delimiter=",",dtype="i4")
+    except IOError:
+        print "ERROR! File {} cannot be found!".format(args.in_filename)
+        sys.exit()
     print "The original sudoku:"
     pretty_print(sudoku_values)
     

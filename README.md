@@ -28,7 +28,7 @@ I start from the simplest sudoku solution and gradually add more intelligence (m
 * To solve a sudoku:
 	* Type `python sudoku.py -i <your_sudoku_input_filename>`. The solution only be printed on the screen.
 	* Type `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename>`. The solution will be printed on the screen as well as written to a file with the given file name.
-	* If you want to use only the greedy search or only the combinatorial (recursive) search, you can use the mutually exclusive options `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -g` or `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -c`.
+	* If you want to use only the greedy search or only the combinatorial (recursive) search, you can use the mutually exclusive options `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -g` or `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -c`. If none of these two flags is set, the default is to use the search method described above.
 	* Or type `python sudoku.py -h` to get help.
 * To run the tests:
 	* Type `py.test` or `py.test tests/`.

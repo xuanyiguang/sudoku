@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.sudoku import *
+from sudoku_solver.sudoku import *
 
 """ Unit tests for the following functions:
 
@@ -14,7 +14,7 @@ sudoku::find_feasible_values
 def load_given_sudoku_answer():
     """ Load the sudoku answer provided in the challenge
     """
-    input_filename = "../data/sudoku_example_out.csv"
+    input_filename = "data/sudoku_example_out.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     return sudoku_values
 
@@ -156,7 +156,7 @@ def test_find_feasible_values_from_same_block():
     cell at row 5, column 6 cannot be 9 because of the 9 in row 0, column 6.
     Therefore the only cell in this block that can be 9 is row 5, column 7.
     """
-    input_filename = "../data/sudoku_medium16_in.csv"
+    input_filename = "data/sudoku_medium16_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 5
     column = 7
@@ -173,7 +173,7 @@ def test_find_feasible_values_from_same_row():
     column 4 cannot be 3 because of the 3 in row 5, column 4.
     Therefore the only cell in this row that can be 3 is row 4, column 8.
     """
-    input_filename = "../data/sudoku_easy6_in.csv"
+    input_filename = "data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 4
     column = 8
@@ -190,7 +190,7 @@ def test_find_feasible_values_from_same_column():
     row 4 cannot be 1 because of the 1 in row 4, column 5.
     Therefore the only cell in this column that can be 1 is row 8, column 4.
     """
-    input_filename = "../data/sudoku_easy6_in.csv"
+    input_filename = "data/sudoku_easy6_in.csv"
     sudoku_values = np.loadtxt(input_filename,delimiter=",",dtype="i4")
     row = 8
     column = 4

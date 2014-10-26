@@ -184,7 +184,9 @@ def find_feasible_values(sudoku_values,row,column):
     """
     feasible_values = exclude_values_appeared_in_same_row_column_block(
         sudoku_values,row,column)
-    
+    if len(feasible_values) == 1:
+        return feasible_values
+        
     # # try to find one feasible value that is infeasible for 
     # # any other empty cell in the same block
     rows_columns_tuple = _reformat_specified_rows_columns_into_tuple(

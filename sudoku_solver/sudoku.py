@@ -219,8 +219,8 @@ def find_feasible_values(sudoku_values,row,column):
     # # if none of the above works (i.e., returns anything)
     return feasible_values
     
-def solve_sudoku_simplistic(sudoku_values):
-    """ Sudoku solver
+def solve_sudoku_greedy(sudoku_values):
+    """ Greedy sudoku solver
     
     Algorithm:
         Determine the feasible values for each unfilled cell, using find_feasible_values. If there is only one feasible value, fill it. Otherwise, wait. 
@@ -261,8 +261,8 @@ def solve_sudoku_simplistic(sudoku_values):
 
     return sudoku_values
     
-def solve_sudoku_recursion(sudoku_values):
-    """ Solve sudoku with recursion
+def solve_sudoku_combinatorial(sudoku_values):
+    """ Combinatorial (recursive) sudoku solver
     
     Algorithm:
         Combinatorially fill the empty cells with feasible values until solution is found.
@@ -306,11 +306,12 @@ def solve_sudoku_recursion(sudoku_values):
     elif validate_sudoku(sudoku_values):
         return sudoku_values
         
-def solve_sudoku(sudoku_values,flag_exclusion=True):
+def solve_sudoku(sudoku_values,flag_greedy=True,flag_combinatorial=True):
     """ Sudoku solver
     
     Algorithm:
-		By default, first apply solve_sudoku_simplistic, then apply solve_sudoku_recursion if the sudoku is not solved yet.
+		By default, first apply solve_sudoku_greedy, then apply solve_sudoku_combinatorial if the sudoku is not solved yet.
+        The two flags are 
     
     Argument: 
         sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
@@ -319,8 +320,10 @@ def solve_sudoku(sudoku_values,flag_exclusion=True):
         sudoku_values (9x9 ndarray), with empty cells (typically in the form
         of 0, but could be any number other than 1 - 9) filled
     """
-    sudoku_values = solve_sudoku_simplistic(sudoku_values)
-    sudoku_values = solve_sudoku_recursion(sudoku_values)
+    if flag_greedy:
+        sudoku_values = solve_sudoku_greedy(sudoku_values)
+    if flag_combinatorial:
+        sudoku_values = solve_sudoku_combinatorial(sudoku_values)
     return sudoku_values
     
 def _int_to_str(int):
@@ -362,11 +365,21 @@ if __name__ == "__main__":
     # # config argument parser for command line input
     parser = argparse.ArgumentParser(description="Sudoku solver")
     parser.add_argument(
-        "-i","--in-file",dest="in_filename",metavar="IN_FILENAME",
+        "-i","--in-file",dest="in_filename",
         help="Sudoku input filename",required=True)
     parser.add_argument(
-        "-o","--out-file",dest="out_filename",metavar="OUT_FILENAME",
+        "-o","--out-file",dest="out_filename",
         help="Sudoku output filename")
+        
+    # # mutually exclusive choice of greedy or combinatorial algorithm
+    # # by default (if nothing is specified), both algorithms will be used
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument(
+        "-g","--greedy",action="store_true",
+        help="Use only the greedy algorithm to solve sudoku")
+    group.add_argument(
+        "-c","--combinatorial",action="store_true",
+        help="Use only the combinatorial (recursive) algorithm to solve sudoku")
     
     # # get command line input
     args = parser.parse_args()
@@ -376,9 +389,21 @@ if __name__ == "__main__":
     print "The original sudoku:"
     pretty_print(sudoku_values)
     
+    # # by default (if no flag is specified)
+    # # first use greedy algorithm then combinatorial (recursive) algorithm
+    if args.greedy is False and args.combinatorial is False:
+        args.greedy = True
+        args.combinatorial = True
+        
     # # solve sudoku
-    sudoku_solution = solve_sudoku(sudoku_values)
-    print "The sudoku solution:"
+    sudoku_solution = solve_sudoku(
+        sudoku_values,
+        flag_greedy=args.greedy,
+        flag_combinatorial=args.combinatorial)
+    if validate_sudoku(sudoku_solution):
+        print "The sudoku is solved:"
+    else:
+        print "The sudoku is not finished yet:"
     pretty_print(sudoku_solution)
     
     # # write solution to csv file

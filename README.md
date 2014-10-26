@@ -45,20 +45,247 @@ I start from the simplest sudoku solution and gradually add more intelligence (m
 
 * Taking a further look at sudoku medium16. There are too many possible combinations, which is why the search is taking too much time. It seems intuitive to me that more intelligence is needed on the algorithm for feasible value, which would reduce the search space of the combinatorial search. When I try to solve sudoku medium16 by myself, I quickly realize that I am using some different rules to identify feasible values of a cell. I would focus on one number, and see within one block (or one row, one column) where that number cannot be placed. Sometimes, this yields unique solution for a cell. I add this intelligence to the algorithm to identify feasible values, and the search becomes faster.
 
-* Given that I have developed two search algorithms: the greedy search and combinatorial search, it makes sense to combine them. The reason is that the greedy search, by filling empty cells with only one feasible value, reduces the size of the feasible values of other cells, which should expedite the combinatorial search. This is the current version of search algorithm described above.
+* Given that I have developed two search algorithms: the greedy search and combinatorial search, it makes sense to combine them. The reason is that the greedy search, by filling empty cells with only one feasible value, reduces the size of the feasible values of other cells, which should expedite the combinatorial search. This is the current version of search algorithm described above. 
 
-Table for solution speed comparison.
+* Here is the performance comparison of the three methods. Greedy search is pretty good except for difficult sudoku puzzles. Combinatorial search can deal with difficult sudoku puzzles, but its computing time can sometimes be large. The current implementation (combining greedy search and combinatorial search) has the most robust computing time.
+
+<table>
+  <tr>
+    <th>Computing time [ms]</th>
+    <th>Greedy search</th>
+    <th>Combinatorial search</th>
+    <th>Current implementation</th>
+  </tr>
+  <tr>
+    <td>Coding Challenge</td>
+    <td>22</td>
+    <td>23</td>
+    <td>23</td>
+  </tr>
+  <tr>
+    <td>Easy 1</td>
+    <td>109</td>
+    <td>96</td>
+    <td>108</td>
+  </tr>
+  <tr>
+    <td>Easy 2</td>
+    <td>135</td>
+    <td>135</td>
+    <td>136</td>
+  </tr>
+  <tr>
+    <td>Easy 3</td>
+    <td>82</td>
+    <td>83</td>
+    <td>84</td>
+  </tr>
+  <tr>
+    <td>Easy 4</td>
+    <td>123</td>
+    <td>308</td>
+    <td>127</td>
+  </tr>
+  <tr>
+    <td>Easy 5</td>
+    <td>92</td>
+    <td>269</td>
+    <td>93</td>
+  </tr>
+  <tr>
+    <td>Easy 6</td>
+    <td>82</td>
+    <td>83</td>
+    <td>84</td>
+  </tr>
+  <tr>
+    <td>Easy 7</td>
+    <td>115</td>
+    <td>111</td>
+    <td>116</td>
+  </tr>
+  <tr>
+    <td>Easy 8</td>
+    <td>144</td>
+    <td>148</td>
+    <td>147</td>
+  </tr>
+  <tr>
+    <td>Easy 9</td>
+    <td>141</td>
+    <td>287</td>
+    <td>141</td>
+  </tr>
+  <tr>
+    <td>Medium 10</td>
+    <td>134</td>
+    <td>454</td>
+    <td>136</td>
+  </tr>
+  <tr>
+    <td>Medium 11</td>
+    <td>116</td>
+    <td>115</td>
+    <td>116</td>
+  </tr>
+  <tr>
+    <td>Medium 12</td>
+    <td>195</td>
+    <td>203</td>
+    <td>202</td>
+  </tr>
+  <tr>
+    <td>Medium 13</td>
+    <td>176</td>
+    <td>303</td>
+    <td>175</td>
+  </tr>
+  <tr>
+    <td>Medium 14</td>
+    <td>125</td>
+    <td>116</td>
+    <td>129</td>
+  </tr>
+  <tr>
+    <td>Medium 15</td>
+    <td>142</td>
+    <td>142</td>
+    <td>140</td>
+  </tr>
+  <tr>
+    <td>Medium 16</td>
+    <td>373</td>
+    <td>1400</td>
+    <td>379</td>
+  </tr>
+  <tr>
+    <td>Medium 17</td>
+    <td>365</td>
+    <td>332</td>
+    <td>370</td>
+  </tr>
+  <tr>
+    <td>Hard 18</td>
+    <td>Incomplete solution</td>
+    <td>2740</td>
+    <td>461</td>
+  </tr>
+  <tr>
+    <td>Hard 19</td>
+    <td>Incomplete solution</td>
+    <td>425</td>
+    <td>444</td>
+  </tr>
+  <tr>
+    <td>Hard 20</td>
+    <td>Incomplete solution</td>
+    <td>717</td>
+    <td>645</td>
+  </tr>
+</table>
 
 * It is possible to add further intelligence to the search algorithm and expedite the search. But given the current speed, no further intelligence is added to keep the logic simple and the code short. 
 
 * I will use the following example to demonstrate the possibility of such intelligence. In the example given in the challenge (and as below), let us focus on where 5 can be place. In the middle right block, the cell on row 3, column 6 (zero indexed) cannot be 5 because of the 5 on row 8, column 6. So, one of the cells on row 3, 4, or 5, and column 8 has to be 5. But no matter which cell has 5, the cell on row 2, column 8 in the upper right block cannot be 5. Considering that the cell on row 2, column 6 cannot be 5 due to the 5 on row 8, column 6, the cell on row 1, column 7 then has to be 5. The intelligence is that we can exclude value 5 from the cell on row 2, column 8, and uniquely determine the cell on row 1, column 7 to be 5, even if it is not clear yet where 5 is located in column 8. 
 
-0,3,5,2,9,0,8,6,4  
-0,8,2,4,1,0,7,0,3  
-7,6,4,3,8,0,0,9,0  
-2,1,8,7,3,9,0,4,0  
-0,0,0,8,0,4,2,3,0  
-0,4,3,0,5,2,9,7,0  
-4,0,6,5,7,1,0,0,9  
-3,5,9,0,2,8,4,1,7  
-8,0,0,9,0,0,5,2,6  
+<table>
+  <tr>
+    <td></td>
+    <td>3</td>
+    <td>5</td>
+    <td>2</td>
+    <td>9</td>
+    <td></td>
+    <td>8</td>
+    <td>6</td>
+    <td>4</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>8</td>
+    <td>2</td>
+    <td>4</td>
+    <td>1</td>
+    <td></td>
+    <td>7</td>
+    <td></td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>7</td>
+    <td>6</td>
+    <td>4</td>
+    <td>3</td>
+    <td>8</td>
+    <td></td>
+    <td></td>
+    <td>9</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>1</td>
+    <td>8</td>
+    <td>7</td>
+    <td>3</td>
+    <td>9</td>
+    <td></td>
+    <td>4</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>8</td>
+    <td></td>
+    <td>4</td>
+    <td>2</td>
+    <td>3</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>4</td>
+    <td>3</td>
+    <td></td>
+    <td>5</td>
+    <td>2</td>
+    <td>9</td>
+    <td>7</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td></td>
+    <td>6</td>
+    <td>5</td>
+    <td>7</td>
+    <td>1</td>
+    <td></td>
+    <td></td>
+    <td>9</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>5</td>
+    <td>9</td>
+    <td></td>
+    <td>2</td>
+    <td>8</td>
+    <td>4</td>
+    <td>1</td>
+    <td>7</td>
+  </tr>
+  <tr>
+    <td>8</td>
+    <td></td>
+    <td></td>
+    <td>9</td>
+    <td></td>
+    <td></td>
+    <td>5</td>
+    <td>2</td>
+    <td>6</td>
+  </tr>
+</table>

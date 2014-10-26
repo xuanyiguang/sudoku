@@ -336,6 +336,12 @@ def solve_sudoku(sudoku_values,flag_exclusion=True):
     return sudoku_values
     
 def _int_to_str(int):
+    """ Convert integer to string
+    
+    Padding a white space on each side
+    Integers other than 1 - 9 is converted to white space
+    
+    """
     if int <= 0 or int >=10:
         return " "*3
     else:

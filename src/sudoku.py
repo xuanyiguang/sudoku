@@ -266,9 +266,9 @@ def solve_sudoku_simplistic(sudoku_values):
         # # restart the process
         flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
         number_of_cell_filled_this_round = 0
-    else:
-        print "Finished!"
-        print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
+    # else:
+        # print "Finished!"
+        # print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
     return sudoku_values
     
 def solve_sudoku_recursion(sudoku_values):
@@ -302,7 +302,7 @@ def solve_sudoku_recursion(sudoku_values):
         
         # # loop through each feasible value
         for value_first_empty_cell in feasible_values_first_empty_cell:
-            print ' '*(62-number_empty_cells), number_empty_cells, row_first_empty_cell, column_first_empty_cell, value_first_empty_cell
+            # print ' '*(62-number_empty_cells), number_empty_cells, row_first_empty_cell, column_first_empty_cell, value_first_empty_cell
             
             # # fill in the feasible value and solve recursively
             new_sudoku_values = sudoku_values.copy()
@@ -335,6 +335,35 @@ def solve_sudoku(sudoku_values,flag_exclusion=True):
     sudoku_values = solve_sudoku_recursion(sudoku_values)
     return sudoku_values
     
+def _int_to_str(int):
+    if int <= 0 or int >=10:
+        return " "*3
+    else:
+        return " " + str(int) + " "
+    
+def pretty_print(sudoku_values):
+    """ Pretty print the sudoku (incomplete or complete)
+        
+    Numbers other than 1 - 9 will not be printed
+    
+    Argument: 
+        sudoku_values (9x9 ndarray, required) -- given sudoku, to be solved
+    """
+    print "|-----------+-----------+-----------|"
+    for row in range(9):
+        str_display = "|"
+        for first_column in range(0,9,3):
+            column_range = get_indices_from_same_block(first_column)
+            str_display += " ".join(map(
+                _int_to_str,sudoku_values[row,column_range])) + "|"
+        print str_display
+        if row == 2 or row == 5 or row == 8:
+            print "|-----------+-----------+-----------|"
+        else:
+            print "|           |           |           |"
+        
+            
+            
 if __name__ == "__main__":
     # # config argument parser for command line input
     parser = argparse.ArgumentParser(description="Solve Sudoku")
@@ -347,10 +376,11 @@ if __name__ == "__main__":
     
     # # solve sudoku
     sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
-    print sudoku_values
+    print "The original sudoku:"
+    pretty_print(sudoku_values)
     sudoku_solution = solve_sudoku(sudoku_values)
-    print sudoku_solution
-    print "Sudoku solved: {}".format(validate_sudoku(sudoku_solution))
+    print "The sudoku solution:"
+    pretty_print(sudoku_solution)
     
     # # TODO: add logger
     

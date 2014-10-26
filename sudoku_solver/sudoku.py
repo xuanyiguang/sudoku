@@ -232,8 +232,6 @@ def solve_sudoku_simplistic(sudoku_values):
         sudoku_values (9x9 ndarray), with empty cells (typically in the form
         of 0, but could be any number other than 1 - 9) filled
     """
-    # print sudoku_values
-
     # # find empty cells
     flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
     number_of_cell_filled_this_round = 0
@@ -248,16 +246,10 @@ def solve_sudoku_simplistic(sudoku_values):
             # # find feasible values for the empty cell
             feasible_values = find_feasible_values(sudoku_values,row,column)
             
-            # # if only one value is feasible, fill it
+            # # if only one value is feasible, fill it, otherwise do nothing
             if len(feasible_values) == 1:
                 sudoku_values[row,column] = feasible_values[0]
                 number_of_cell_filled_this_round += 1
-                # print "Fill row {}, column {}, with {}".format(row,column,feasible_values[0])
-                # print sudoku_values
-            # # otherwise do nothing
-            else:
-                pass
-                # print "Row {}, column {} can possibly be {}, no fill".format(row,column,feasible_values)
                 
         # # no cell is filled, stuck
         if number_of_cell_filled_this_round == 0:
@@ -266,9 +258,7 @@ def solve_sudoku_simplistic(sudoku_values):
         # # restart the process
         flag_empty_cells = (sudoku_values <= 0) | (sudoku_values >= 10)
         number_of_cell_filled_this_round = 0
-    # else:
-        # print "Finished!"
-        # print "Sudoku solved: {}".format(validate_sudoku(sudoku_values))
+
     return sudoku_values
     
 def solve_sudoku_recursion(sudoku_values):
@@ -302,8 +292,6 @@ def solve_sudoku_recursion(sudoku_values):
         
         # # loop through each feasible value
         for value_first_empty_cell in feasible_values_first_empty_cell:
-            # print ' '*(62-number_empty_cells), number_empty_cells, row_first_empty_cell, column_first_empty_cell, value_first_empty_cell
-            
             # # fill in the feasible value and solve recursively
             new_sudoku_values = sudoku_values.copy()
             new_sudoku_values[row_first_empty_cell, column_first_empty_cell] = \
@@ -372,22 +360,29 @@ def pretty_print(sudoku_values):
             
 if __name__ == "__main__":
     # # config argument parser for command line input
-    parser = argparse.ArgumentParser(description="Solve Sudoku")
+    parser = argparse.ArgumentParser(description="Sudoku solver")
     parser.add_argument(
-        "-f",dest="filename",metavar="FILENAME",
-        help="Sudoku input filename")
+        "-i","--in-file",dest="in_filename",metavar="IN_FILENAME",
+        help="Sudoku input filename",required=True)
+    parser.add_argument(
+        "-o","--out-file",dest="out_filename",metavar="OUT_FILENAME",
+        help="Sudoku output filename")
     
     # # get command line input
     args = parser.parse_args()
     
-    # # solve sudoku
-    sudoku_values = np.loadtxt(args.filename,delimiter=",",dtype="i4")
+    # # load sudoku
+    sudoku_values = np.loadtxt(args.in_filename,delimiter=",",dtype="i4")
     print "The original sudoku:"
     pretty_print(sudoku_values)
+    
+    # # solve sudoku
     sudoku_solution = solve_sudoku(sudoku_values)
     print "The sudoku solution:"
     pretty_print(sudoku_solution)
     
-    # # TODO: add logger
+    # # write solution to csv file
+    if args.out_filename is None:
+        args.out_filename = 'solution.csv'
+    np.savetxt(args.out_filename,sudoku_solution,delimiter=',',fmt='%d')
     
-    # # TODO: produce csv file as output

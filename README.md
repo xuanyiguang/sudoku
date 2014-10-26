@@ -1,6 +1,11 @@
 Sudoku Solver
 ======
 
+## Assumptions
+
+* It is not a good user experience if the sudoku solver takes too long (more than 2-3 seconds) to solve.
+* As long as any given sudoku can be solved quickly (say within 1 second), it is more important to keep the logic simple and the code short for easier maintenance.
+
 ## Solution algorithm
 
 Here is how the search for sudoku solution is carried out currently:
@@ -15,6 +20,8 @@ Here is how the search for sudoku solution is carried out currently:
 	* If the number of feasible values is 0 for some cell, this would be a dead end (i.e., some value filled earlier in the recursion is wrong). Search in the current iteration will finish without returning anything.
 	* If all the cells are filled successfully, a solution is found. By convention, published sudoku should have one unique solution.
 
+I start from the simplest sudoku solution and gradually add more intelligence (more code) to the search algorithm. See my memo below for more details. The current solution method can solve most of the sudoku puzzles within 1 second, so I stopped there. I think the current version of the sudoku solver has a good trade-off between user experience (computing time) and code complexity.
+
 ## How to run
 
 * On the command line, go to the root of the repo, and type `cd sudoku_solver` to step into the sudoku_solver folder.
@@ -27,13 +34,6 @@ Here is how the search for sudoku solution is carried out currently:
 	* Type `py.test` or `py.test tests/`.
 	* Here is more information on [pytest](http://pytest.org/latest/index.html).
 	* All test cases should pass in the latest commit.
-
-## Assumptions
-* It is not a good user experience if the sudoku solver takes too long (more than 2-3 seconds).
-* As long as there is enough intelligence in the algorithm to solve a sudoku quickly (say within 1 second), it is more important to keep the logic simple and the code short.
-
-## Reason for current choice of algorithm
-
 
 ## Memo for my thought process
 
@@ -53,12 +53,12 @@ Table for solution speed comparison.
 
 * I will use the following example to demonstrate the possibility of such intelligence. In the example given in the challenge (and as below), let us focus on where 5 can be place. In the middle right block, the cell on row 3, column 6 (zero indexed) cannot be 5 because of the 5 on row 8, column 6. So, one of the cells on row 3, 4, or 5, and column 8 has to be 5. But no matter which cell has 5, the cell on row 2, column 8 in the upper right block cannot be 5. Considering that the cell on row 2, column 6 cannot be 5 due to the 5 on row 8, column 6, the cell on row 1, column 7 then has to be 5. The intelligence is that we can exclude value 5 from the cell on row 2, column 8, and uniquely determine the cell on row 1, column 7 to be 5, even if it is not clear yet where 5 is located in column 8. 
 
-0,3,5,2,9,0,8,6,4
-0,8,2,4,1,0,7,0,3
-7,6,4,3,8,0,0,9,0
-2,1,8,7,3,9,0,4,0
-0,0,0,8,0,4,2,3,0
-0,4,3,0,5,2,9,7,0
-4,0,6,5,7,1,0,0,9
-3,5,9,0,2,8,4,1,7
-8,0,0,9,0,0,5,2,6
+0,3,5,2,9,0,8,6,4  
+0,8,2,4,1,0,7,0,3  
+7,6,4,3,8,0,0,9,0  
+2,1,8,7,3,9,0,4,0  
+0,0,0,8,0,4,2,3,0  
+0,4,3,0,5,2,9,7,0  
+4,0,6,5,7,1,0,0,9  
+3,5,9,0,2,8,4,1,7  
+8,0,0,9,0,0,5,2,6  

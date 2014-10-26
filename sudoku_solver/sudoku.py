@@ -409,7 +409,6 @@ if __name__ == "__main__":
     pretty_print(sudoku_solution)
     
     # # write solution to csv file
-    if args.out_filename is None:
-        args.out_filename = 'solution.csv'
-    np.savetxt(args.out_filename,sudoku_solution,delimiter=',',fmt='%d')
+    if args.out_filename is not None:
+        np.savetxt(args.out_filename,sudoku_solution,delimiter=',',fmt='%d')
     

@@ -26,8 +26,8 @@ I start from the simplest sudoku solution and gradually add more intelligence (m
 
 * On the command line, go to the root of the repo, and type `cd sudoku_solver` to step into the sudoku_solver folder.
 * To solve a sudoku:
-	* Type `python sudoku.py -i <your_sudoku_input_filename>`. The solution will be written to a file with default name `solution.csv` in the current folder.
-	* Type `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename>`. The solution will be written to a file with the given filename.
+	* Type `python sudoku.py -i <your_sudoku_input_filename>`. The solution only be printed on the screen.
+	* Type `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename>`. The solution will be printed on the screen as well as written to a file with the given file name.
 	* If you want to use only the greedy search or only the combinatorial (recursive) search, you can use the mutually exclusive options `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -g` or `python sudoku.py -i <your_sudoku_input_filename> -o <your_sudoku_output_filename> -c`.
 	* Or type `python sudoku.py -h` to get help.
 * To run the tests:

@@ -24,6 +24,7 @@ I start from the simplest sudoku solution and gradually add more intelligence (m
 
 ## How to run
 
+* The code is written in Python. You will need to install [Python](https://www.python.org/), and packages [numpy](http://www.numpy.org/) and [pytest](http://pytest.org/latest/index.html).
 * On the command line, go to the root of the repo, and type `cd sudoku_solver` to step into the sudoku_solver folder.
 * To solve a sudoku:
 	* Type `python sudoku.py -i <your_sudoku_input_filename>`. The solution only be printed on the screen.

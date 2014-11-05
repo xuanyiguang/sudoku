@@ -143,7 +143,7 @@ def test_exclude_values_appeared_two_feasible_values_with_incomplete_sudoku():
     feasible_values = exclude_values_appeared_in_same_row_column_block(sudoku_values,row,column)
     
     assert len(feasible_values) == 2
-    assert set(feasible_values) == set([cell_value,another_cell_value])
+    assert set(feasible_values) == {cell_value, another_cell_value}
 
 def test_find_feasible_values_from_same_block():
     """ Test find_feasible_values based on block uniqueness
@@ -240,10 +240,10 @@ def test_find_feasible_values_multiple_situation_in_one_sudoku():
     column = 5
     cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 3
-    assert set(cell_values) == set([4,7,9])
+    assert set(cell_values) == {4, 7, 9}
 
     row = 3
     column = 3
     cell_values = find_feasible_values(sudoku_values,row,column)
     assert len(cell_values) == 4
-    assert set(cell_values) == set([5,7,8,9])
+    assert set(cell_values) == {5, 7, 8, 9}

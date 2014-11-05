@@ -329,17 +329,17 @@ def solve_sudoku(sudoku_values,flag_greedy=True,flag_combinatorial=True):
         sudoku_values = solve_sudoku_combinatorial(sudoku_values)
     return sudoku_values
     
-def _int_to_str(int):
+def _int_to_str(integer):
     """ Convert integer to string
     
     Padding a white space on each side
     Integers other than 1 - 9 is converted to white space
     
     """
-    if int <= 0 or int >=10:
+    if integer <= 0 or integer >=10:
         return " "*3
     else:
-        return " " + str(int) + " "
+        return " " + str(integer) + " "
     
 def pretty_print(sudoku_values):
     """ Pretty print the sudoku (incomplete or complete)

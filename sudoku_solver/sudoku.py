@@ -144,9 +144,9 @@ def _find_values_infeasible_for_specified_rows_columns(
     remaining_values = feasible_values.copy()
     for other_row, other_column in rows_columns_tuple:
         # # make sure cell is empty and different
-        if ((sudoku_values[other_row,other_column] <= 0) \
-            or (sudoku_values[other_row,other_column] >= 10)) \
-            and ((other_row != row) or (other_column != column)):
+        if (((sudoku_values[other_row,other_column] <= 0)
+                or (sudoku_values[other_row,other_column] >= 10))
+                and ((other_row != row) or (other_column != column))):
             # # get feasible values for other cells
             other_feasible_values = \
                 exclude_values_appeared_in_same_row_column_block(sudoku_values,other_row,other_column)
